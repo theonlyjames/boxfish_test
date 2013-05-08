@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Boxfish text</title>
+<style type="text/css">
+#container {width:330px;height:349px;margin:0;padding:0;font-family: Arial, sans-serif;color:#fff;border:1px solid #000;background:#fff url('src/img/background.jpg') no-repeat top left;overflow-y:hidden;}
+#inner{height:305px;margin:0;padding:0;background: transparent url("src/img/footer-gradient.png") repeat-x bottom left;overflow-x:hidden;position:relative;}
+#header {width:300px;height:15px;background-color:#000;margin:5px auto;padding:10px;font-size:12pt;}
+#item {width:308px;padding:5px;margin:5px auto;margin-top:0;font-size:11px;border: 1px solid #454545;background: -webkit-linear-gradient(top, rgba(0,0,0,0.44) 0%,rgba(0,0,0,0.91) 100%);}
+#footer{height:21px;background:transparent url("src/img/footer-gradient.png") repeat-x;}
+#channel{float:left;color:#00FF44;margin:0;}
+img {width:81px;height:46px;float:left;}
+#time{width: 81px;float:left;padding:0;margin-top:5px;background: transparent url("src/img/clock.png") no-repeat top right;}
+#imgTime{width:81px;float:left;margin-right:5px;}
+#program{float:left;margin: 0 0 0 4px;}
+#title{width:215px;float:left;margin-bottom:5px;}
+#text{width:215px;margin:0;float:left;}
+#clear{clear:both;}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script type='text/javascript' src="src/jquery.transit.js"></script>
+</head>
+
+<body>
+
+<div id="container">
+	<div id="header">Boxfish Live Mentions</div>
+	<div id="inner">
+            <div id="wrapper" style="position:absolute;top:0px;left:330px;"></div>
+	</div>
+</div>
+	<script>
+            
+
+		function getData() {
+                        
+			$.ajax({
+				url: 'http://api.staging.boxfish.com/v2/demo/codetest/?wait=4&callback=?',
+				dataType: 'jsonp',
+				jsonp: 'jsoncallback',
+				jsonp:'success',
+				success: function(data, textStatus, jqXHR) {
+                                    
+                                    var options = data;
+                                        
+                                        this.imgTime = jQuery(document.createElement('div')).attr({id: 'imgTime'});
+                                        this.thumbnail = jQuery(document.createElement('img'));
+                                        this.time = jQuery(document.createElement('p')).attr({id: 'time'});
+                                        this.title = jQuery(document.createElement('div')).attr({id: 'title'});
+                                        this.channel = jQuery(document.createElement('p')).attr({id: 'channel'});
+                                        this.program = jQuery(document.createElement('p')).attr({id: 'program'});
+                                        this.text = jQuery(document.createElement('p')).attr({id: 'text'});
+                                        this.clear = jQuery(document.createElement('div')).attr({id: 'clear'});
+                                        
+                                        this.thumbnail.attr({src: options.thumbnail});
+                                        this.time.text(options.time);
+                                        this.title.attr({id: 'title'});
+                                        this.channel.text(options.channel);
+                                        this.program.text(' - ' + options.program);
+                                        this.text.html(options.text);
+                                        
+                                        $('<div/>').attr({id: 'item'}).prependTo('#wrapper').append(this.item).prepend(this.imgTime.append(this.thumbnail,this.time)).append(this.title.append(this.channel, this.program)).append(this.text,this.clear);
+
+					$('#item').transition({ x: '-325px', opacity: 1, scale: 1}), 10000;		
+				}
+			})
+			.always(function() { getData(); });	// we keep a long polling connection to the server open 
+                      
+            
+        }
+
+		$(function() { 
+                    getData();
+                });
+
+	</script>
+</body>
+</html>
+
